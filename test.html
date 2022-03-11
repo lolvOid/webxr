@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>Hello WebXR!</title>
 
     <!-- three.js -->
@@ -11,6 +12,7 @@
     <script src="https://unpkg.com/three@0.126.0/build/three.js"></script>
 
     <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/webxr-polyfill@latest/build/webxr-polyfill.js'></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,8 +21,11 @@
 
     <!-- Starting an immersive WebXR session requires user interaction.
     We start this one with a simple button. -->
-    <button onclick="activateXR()">Start Hello WebXR</button>
+    <button onclick="activateXR()" >Start WebXR</button>
     <script>
+        let polyfill = new WebXRPolyfill();
+
+
         async function activateXR() {
             // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
             const canvas = document.createElement("canvas");
@@ -34,6 +39,9 @@
             directionalLight.position.set(10, 15, 10);
             scene.add(directionalLight);
 
+            const light = new THREE.AmbientLight(0x404040); // soft white light
+            scene.add(light);
+
             // To be continued in upcoming steps.
             // Set up the WebGLRenderer, which handles rendering to the session's base layer.
             const renderer = new THREE.WebGLRenderer({
@@ -43,7 +51,8 @@
                 context: gl
             });
             renderer.autoClear = false;
-
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             const loader = new THREE.GLTFLoader();
 
 
@@ -73,17 +82,17 @@
                 space: viewerSpace
             });
             let reticle;
-            loader.load("media/gltf/reticle/reticle.gltf", function(gltf) {
+            loader.load("media/gltf/reticle/reticle.gltf", function (gltf) {
                 reticle = gltf.scene;
                 reticle.visible = false;
                 scene.add(reticle);
             })
 
             let flower;
-            loader.load("media/gltf/sunflower/sunflower.gltf", function(gltf) {
+            loader.load("media/gltf/sunflower/sunflower.gltf", function (gltf) {
                 flower = gltf.scene;
 
-                flower.traverse(function(child) {
+                flower.traverse(function (child) {
                     console.log(child);
                 });
             });
@@ -120,7 +129,7 @@
                 const pose = frame.getViewerPose(referenceSpace);
                 if (pose) {
                     // In mobile AR, we only have one view.
-                    const view = pose.views[0];
+                    const view = pose.views[1];
 
                     const viewport = session.renderState.baseLayer.getViewport(view);
                     renderer.setSize(viewport.width, viewport.height)
@@ -134,7 +143,8 @@
                     if (hitTestResults.length > 0 && reticle) {
                         const hitPose = hitTestResults[0].getPose(referenceSpace);
                         reticle.visible = true;
-                        reticle.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z)
+                        reticle.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose
+                            .transform.position.z)
                         reticle.updateMatrixWorld(true);
                     }
 
