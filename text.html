@@ -80,8 +80,12 @@
             })
 
             let flower;
-            loader.load("media/gltf/sunflower/sunflower.gltf", function(gltf) {
+            loader.load("media/gltf/lowpolytrees_pack/scene.gltf", function(gltf) {
                 flower = gltf.scene;
+
+                flower.traverse(function(child) {
+                    console.log(child);
+                });
             });
 
 
