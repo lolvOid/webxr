@@ -84,9 +84,19 @@
                 flower = gltf.scene;
             });
 
+
+            const materials = [
+                new THREE.MeshBasicMaterial({
+                    color: 0xff0000
+                }),
+
+            ];
+
+            let cube = new THREE.Mesh(new THREE.BoxBufferGeometry(0.2, 0.2, 0.2), materials);
+
             session.addEventListener("select", (event) => {
-                if (flower) {
-                    const clone = flower.clone();
+                if (cube) {
+                    const clone = cube.clone();
                     clone.position.copy(reticle.position);
                     scene.add(clone);
                 }
