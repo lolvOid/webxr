@@ -29,7 +29,23 @@ async function activateXR() {
     renderer.autoClear = false;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    
     const loader = new THREE.GLTFLoader();
+    let reticle;
+    loader.load("media/gltf/reticle/reticle.gltf", function (gltf) {
+        reticle = gltf.scene;
+        reticle.visible = false;
+        scene.add(reticle);
+    })
+
+    let flower;
+    loader.load("media/gltf/sunflower/sunflower.gltf", function (gltf) {
+        flower = gltf.scene;
+
+        flower.traverse(function (child) {
+            console.log(child);
+        });
+    });
 
 
     // The API directly updates the camera matrices.
@@ -57,22 +73,7 @@ async function activateXR() {
     const hitTestSource = await session.requestHitTestSource({
         space: viewerSpace
     });
-    let reticle;
-    loader.load("media/gltf/reticle/reticle.gltf", function (gltf) {
-        reticle = gltf.scene;
-        reticle.visible = false;
-        scene.add(reticle);
-    })
-
-    let flower;
-    loader.load("media/gltf/sunflower/sunflower.gltf", function (gltf) {
-        flower = gltf.scene;
-
-        flower.traverse(function (child) {
-            console.log(child);
-        });
-    });
-
+   
 
     // const materials = [
     //     new THREE.MeshBasicMaterial({
