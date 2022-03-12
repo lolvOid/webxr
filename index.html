@@ -1,30 +1,29 @@
 <!doctype html>
-
 <html>
 
 <head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'>
-    <meta name='mobile-web-app-capable' content='yes'>
-    <meta name='apple-mobile-web-app-capable' content='yes'>
-    <link rel='icon' type='image/png' sizes='32x32' href='favicon-32x32.png'>
-    <link rel='icon' type='image/png' sizes='96x96' href='favicon-96x96.png'>
-    <link rel='stylesheet' href='css/common.css'>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Hello WebXR!</title>
 
-    <title>Hit Test</title>
+    <!-- three.js -->
+
+    <script src="https://unpkg.com/three@0.126.0/build/three.js"></script>
+
+    <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/webxr-polyfill@latest/build/webxr-polyfill.js'></script>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header>
-        <details open>
-            <summary>Hit Test</summary>
-            <p>
-                Place objects on real-world surfaces.
-                <a class="back" href="./">Back</a>
-            </p>
-        </details>
-    </header>
-    <script src="./app.js" type="module"></script>
+
+    <!-- Starting an immersive WebXR session requires user interaction.
+    We start this one with a simple button. -->
+    
+    <button onclick="activateXR()" >Start WebXR</button>
+    <script src="viewer.js"></script>
 </body>
 
 </html>
