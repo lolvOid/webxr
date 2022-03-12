@@ -1,45 +1,62 @@
 
+
 let polyfill = new WebXRPolyfill();
+
+function LoadGltf(){
+
+}
+
+
+let canvas =null;
+let gl = null;
+let scene = null;
+let directionalLight = null;
+let ambientLight = null;
+let renderer = null;
+let gltfloader =  new THREE.GLTFLoader();
+let reticle,flower;
 
 
 async function activateXR() {
     // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
-    const canvas = document.createElement("canvas");
+    canvas = document.createElement("canvas");
     document.body.appendChild(canvas);
-    const gl = canvas.getContext("webgl", {
+    gl = canvas.getContext("webgl", {
         xrCompatible: true
     });
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(10, 15, 10);
     scene.add(directionalLight);
 
-    const light = new THREE.AmbientLight(0x404040); // soft white light
-    scene.add(light);
+    ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+    scene.add(ambientLight);
 
     // To be continued in upcoming steps.
     // Set up the WebGLRenderer, which handles rendering to the session's base layer.
-    const renderer = new THREE.WebGLRenderer({
+    renderer = new THREE.WebGLRenderer({
+        antialias:true,
         alpha: true,
         preserveDrawingBuffer: true,
         canvas: canvas,
         context: gl
+      
     });
     renderer.autoClear = false;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     
-    const loader = new THREE.GLTFLoader();
-    let reticle;
-    loader.load("media/gltf/reticle/reticle.gltf", function (gltf) {
+ 
+ 
+    gltfloader.load("media/gltf/reticle/reticle.gltf", function (gltf) {
         reticle = gltf.scene;
         reticle.visible = false;
         scene.add(reticle);
     })
 
-    let flower;
-    loader.load("media/gltf/sunflower/sunflower.gltf", function (gltf) {
+   
+    gltfloader.load("media/gltf/sunflower/sunflower.gltf", function (gltf) {
         flower = gltf.scene;
 
         flower.traverse(function (child) {
@@ -48,20 +65,23 @@ async function activateXR() {
     });
 
 
-    // The API directly updates the camera matrices.
-    // Disable matrix auto updates so three.js doesn't attempt
-    // to handle the matrices independently.
     const camera = new THREE.PerspectiveCamera();
     camera.matrixAutoUpdate = false;
 
     // Initialize a WebXR session using "immersive-ar".
     const session = await navigator.xr.requestSession("immersive-ar", {
-        requiredFeatures: ['hit-test']
+        requiredFeatures: ["local", "hit-test"],
+        domOverlay: {
+            root: document.getElementById('overlay')
+        }
     });
+ 
+      
     session.updateRenderState({
         baseLayer: new XRWebGLLayer(session, gl)
     });
 
+      
     // A 'local' reference space has a native origin that is located
     // near the viewer's position at the time the session was created.
     const referenceSpace = await session.requestReferenceSpace('local');
@@ -75,14 +95,6 @@ async function activateXR() {
     });
    
 
-    // const materials = [
-    //     new THREE.MeshBasicMaterial({
-    //         color: 0xff0000
-    //     }),
-
-    // ];
-
-    // let cube = new THREE.Mesh(new THREE.BoxBufferGeometry(0.2, 0.2, 0.2), materials);
 
     session.addEventListener("select", (event) => {
         if (flower) {
@@ -97,7 +109,7 @@ async function activateXR() {
     const onXRFrame = (time, frame) => {
         // Queue up the next draw request.
         session.requestAnimationFrame(onXRFrame);
-
+        document.getElementById('overlay').innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
         // Bind the graphics framebuffer to the baseLayer's framebuffer
         gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer)
 
@@ -106,11 +118,15 @@ async function activateXR() {
         const pose = frame.getViewerPose(referenceSpace);
         if (pose) {
             // In mobile AR, we only have one view.
-            const view = pose.views[1];
+            const view = pose.views[0];
 
             const viewport = session.renderState.baseLayer.getViewport(view);
             renderer.setSize(viewport.width, viewport.height)
-
+            renderer.setPixelRatio(window.devicePixelRatio);
+  
+            renderer.xr.enabled = true;
+            renderer.xr.setReferenceSpaceType('local');
+            renderer.xr.setSession(session);
             // Use the view's transform matrix and projection matrix to configure the THREE.camera.
             camera.matrix.fromArray(view.transform.matrix)
             camera.projectionMatrix.fromArray(view.projectionMatrix);
@@ -127,7 +143,10 @@ async function activateXR() {
 
             // Render the scene with THREE.WebGLRenderer.
             renderer.render(scene, camera)
+            
         }
     }
     session.requestAnimationFrame(onXRFrame);
 }
+
+
