@@ -310,9 +310,7 @@ function render( timestamp, frame ) {
                 isAR = false;
 
                 reticle.visible = false;
-                var box = new THREE.Box3();
-                box.setFromObject(current_object);
-                box.center(controls.target);
+                
                 document.getElementById("place-button").style.display = "none";
                 
 
