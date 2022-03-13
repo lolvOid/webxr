@@ -34,7 +34,6 @@ $("#ARButton").click(function () {
     isAR = true;
 });
 
-
 document.getElementById("place-button").style.display = "none";
             
 $("#place-button").click(function(){
@@ -98,8 +97,9 @@ function init() {
         root: document.getElementById('contentOverlay')
     };
 
-    document.body.appendChild(ARButton.createButton(renderer, options));
+    document.getElementById("contentOverlay").appendChild(ARButton.createButton(renderer, options));
 
+    $("#ARButton").css("position",'relative');
 
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
