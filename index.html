@@ -17,7 +17,8 @@
     <script src="https://unpkg.com/three@0.138.3/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://unpkg.com/three@0.138.3/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://unpkg.com/three@0.138.3/examples/js/controls/OrbitControls.js"></script>
-
+    <script type="module" src="https://unpkg.com/three@0.138.3/examples/jsm/webxr/VRButton.js"></script>
+    <script type="module" src="https://unpkg.com/three@0.138.3/examples/jsm/webxr/ARButton.js"></script>
 
     <script src='https://cdn.jsdelivr.net/npm/webxr-polyfill@latest/build/webxr-polyfill.js'></script>
 
@@ -34,26 +35,26 @@
         </div>
 
 
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" id="contentOverlay">
             <h5>Options <br> (S: small , L: large)</h5>
             <div id="overlay" class="col-12">
-                
+
                 <h6>Width: <span id="width">1</span> </h6>
                 <h6>Height: <span id="height">1</span> </h6>
                 <h6>Breadth: <span id="breadth">1</span> </h6>
-                <input type="checkbox" class="form-check-input " id="uniform" name="uniform" checked >
-                <label for="uniform" class="form-check-label" >Uniform Scaling</label>
+                <input type="checkbox" id="uniform" name="uniform" checked>
+                <label for="uniform" class="form-check-label">Uniform Scaling</label>
 
                 <br>
                 <div id="uniform_info" class="row justify-content-center">
                     <button class="btn  btn-outline-dark rounded-circle" id="btnSmall">S</button>
                     <button class="btn btn-outline-dark rounded-circle" id="btnLarge">L</button>
                 </div>
-                
+
 
                 <div id="absolute_info" class="row justify-content-center col-12">
                     <div class="d-inline-flex">
-                        <h6 class="m-4">W:</h6>
+                        <h6 class="m-4">W:</h6> 
                         <button class="btn  btn-outline-dark rounded-circle" id="btnWSmall">S</button>
                         <button class="btn btn-outline-dark rounded-circle" id="btnWLarge">L</button>
                     </div>
@@ -67,11 +68,13 @@
                         <button class="btn  btn-outline-dark rounded-circle" id="btnBSmall">S</button>
                         <button class="btn btn-outline-dark rounded-circle" id="btnBLarge">L</button>
                     </div>
-                   
-                </div>
 
-                <button onclick="activateXR()" class="btn btn-outline-info"><i class="fa fa-camera"></i> Start
-                    AR</button>
+                </div>
+                <button class="btn btn-outline-info" id="place-button">Place</button>
+
+                <!-- 
+                <button class="btn btn-outline-danger" id="ExitARbutton"><i class="fa fa-arrow-left"></i>Exit
+                    AR</button> -->
             </div>
         </div>
 
@@ -90,7 +93,7 @@
     </script>
 
 
-    <script src="sample_cube.js"></script>
+    <script type="module" src="sample_cube.js"></script>
 </body>
 
 </html>
