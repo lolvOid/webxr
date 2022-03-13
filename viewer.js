@@ -2,9 +2,6 @@
 
 let polyfill = new WebXRPolyfill();
 
-function LoadGltf(){
-
-}
 
 
 let canvas =null;
@@ -16,7 +13,9 @@ let renderer = null;
 let gltfloader =  new THREE.GLTFLoader();
 let reticle,flower;
 
-
+function onSessionStarted(){
+    document.getElementById('overlay').innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
+}
 async function activateXR() {
     // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
     canvas = document.createElement("canvas");
@@ -56,13 +55,13 @@ async function activateXR() {
     })
 
    
-    gltfloader.load("media/gltf/sunflower/sunflower.gltf", function (gltf) {
-        flower = gltf.scene;
+    // gltfloader.load("media/gltf/sunflower/sunflower.gltf", function (gltf) {
+    //     flower = gltf.scene;
 
-        flower.traverse(function (child) {
-            console.log(child);
-        });
-    });
+    //     flower.traverse(function (child) {
+    //         console.log(child);
+    //     });
+    // });
 
 
     const camera = new THREE.PerspectiveCamera();
@@ -109,7 +108,7 @@ async function activateXR() {
     const onXRFrame = (time, frame) => {
         // Queue up the next draw request.
         session.requestAnimationFrame(onXRFrame);
-        document.getElementById('overlay').innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
+       
         // Bind the graphics framebuffer to the baseLayer's framebuffer
         gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer)
 
